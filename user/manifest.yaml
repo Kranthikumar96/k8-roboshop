@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user
+  namespace: roboshop
+  labels:
+    project: roboshop
+    environment: dev
+    tier: app
+    component: user
+    env: dev
+data:
+  MONGO_URL: "mongodb://mongodb:27017/users"
+  REDIS_URL: "redis://redis:6379"
+  MONGO: "true"
+---
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: user
+  namespace: roboshop
+  # deployment labels
+  labels:
+    project: roboshop
+    environment: dev
+    tier: app
+    component: user
+spec:
+  replica: 1
+  # These are the labels replica set use to create pod replicas, this should match pod labels
+  selector:
+    matchLabels:
+      project: roboshop
+      environment: dev
+      tier: app
+      component: user
+  # This is pod definition
+  template:
+    metadata:
+      labels: 
+        project: roboshop
+        environment: dev
+        tier: app
+        component: user
+    spec:
+      containers:
+      - name: user
+        image: kranthikumar96/user:v1
+        envFrom:
+        - configMapRef:
+          name: user
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user
+  namespace: roboshop
+  labels:
+    project: roboshop
+    environment: dev
+    tier: app
+    component: user
+spec:
+  selector:
+    project: roboshop
+    environment: dev
+    tier: app
+    component: user
+  ports:
+  - protocol: TCP
+    port: 8080  # service port
+    targetport: 8080  # container port
