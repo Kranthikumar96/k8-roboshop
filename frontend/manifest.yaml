@@ -140,4 +140,4 @@ spec:
   ports:
   - protocol: TCP
     port: 80  # service port
-    targetport: 80  # container port
+    targetport: 8080  # container port
