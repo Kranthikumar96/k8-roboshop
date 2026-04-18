@@ -32,9 +32,6 @@ spec:
       environment: dev
       tier: database
       component: rabbitmq
-      envFrom:
-        - secretRef:
-          name: rabbitmq
   # This is pod definition
   template:
     metadata:
@@ -47,6 +44,9 @@ spec:
       containers:
       - name: rabbitmq
         image: rabbitmq:3
+        envFrom:
+        - secretRef:
+          name: rabbitmq
 ---
 apiVersion: v1
 kind: Service
